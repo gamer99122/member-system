@@ -11,6 +11,22 @@ app.set("view engine", "ejs");
 app.set("views", "./views");
 app.use(express.static("public"));//管理靜態檔案
 app.use(express.urlencoded({ extended: true }));//接受前端post的
+//需要處理的路由
+app.get("/",function(req,res){
+  res.render("index.ejs");
+});
+
+app.get("/member",function(req,res){
+  res.render("member.ejs");
+});
+
+//連線到 /error?msg=錯誤訊息
+app.get("/error",function(req,res){
+  const msg = req.query.msg;
+  res.render("error.ejs",{msg:msg});
+});
+
+// 啟動伺服器在 http://localhost:3000
 app.listen(3000, function () {
     console.log("Server Started");
 });
