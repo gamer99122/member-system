@@ -44,14 +44,21 @@ app.get("/", function (req, res) {
   res.render("index.ejs");
 });
 
-app.get("/member", function (req, res) {
+app.get("/member",async function (req, res) {
   let member = req.session.member;
-  console.log(member); 
+  
   if(member== null){
     return res.redirect("error?msg=非法會員，請重新登入");
   }
 
-  res.render("member.ejs");
+  const collection = db.collection("user");
+  let result = await collection.find({});
+  let data = [];
+  await result.forEach(element => {
+    data.push(element);
+  });
+  console.log(data); 
+  res.render("member.ejs",{member:member,data:data});
 });
 
 //連線到 /error?msg=錯誤訊息
