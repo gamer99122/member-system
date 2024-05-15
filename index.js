@@ -45,6 +45,12 @@ app.get("/", function (req, res) {
 });
 
 app.get("/member", function (req, res) {
+  let member = req.session.member;
+  console.log(member); 
+  if(member== null){
+    return res.redirect("error?msg=非法會員，請重新登入");
+  }
+
   res.render("member.ejs");
 });
 
@@ -72,6 +78,28 @@ app.post("/signup", async function (req, res) {
   result = await collection.insertOne({ name: name, email: email, password: password });
   res.redirect("/");
 });
+
+//會員登入功能
+app.post("/singin", async function (req, res) {
+  const email = req.body.email;
+  const password = req.body.password;
+  let collection = db.collection("user");
+  let result = await collection.findOne({ $and: [{ email: email }, { password: password }] });
+
+  if (result == null) {
+    return res.redirect("/error?msg=登入失敗，郵件或密碼輸入錯誤");
+  }
+  req.session.member = result;
+  console.log(result);
+  res.redirect("/member");
+});
+
+//登出會員
+app.get("/singout",function(req,res){
+  req.session.member = null;
+  res.redirect("/");
+});
+
 
 
 // 啟動伺服器在 http://localhost:3000
