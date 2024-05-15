@@ -25,7 +25,8 @@ const client = new MongoClient(uri, {
   }
 });
 
-let db = null;
+/** @type {mongodb.Db} */
+let db;
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -61,8 +62,6 @@ app.post("/signup", async function (req, res) {
   console.log(email);
 
   // 檢查資料庫的資料
-  // let collection = global.db.collection("user");
-  //const collection1 = db.collection("user");
   let collection = db.collection("user");
   let result = await collection.findOne({ email: email });
   if (result !== null) {
